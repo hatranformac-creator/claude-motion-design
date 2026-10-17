@@ -1,0 +1,519 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>AIMarketing 15s</title>
+<style>
+@font-face{font-family:Mont;src:url(fonts/montserrat-latin.woff2) format('woff2');font-weight:100 900}
+@font-face{font-family:UI;src:local('Inter'),local('Inter Regular');font-weight:400}
+@font-face{font-family:UI;src:local('Inter SemiBold'),local('Inter-SemiBold');font-weight:600}
+@font-face{font-family:UI;src:local('Inter Bold'),local('Inter-Bold');font-weight:700}
+@font-face{font-family:UI;src:local('Inter Medium'),local('Inter-Medium');font-weight:500}
+:root{--ink:#08173d;--green:#107658;--green2:#20af48;--slate:#64748b;--line:#e2e8f0;--card:#fbfdfa}
+html,body{margin:0;background:#0b0b0c}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:#f1f5f9;font-family:UI,Inter,sans-serif;color:var(--ink)}
+.abs{position:absolute;left:0;top:0}
+#bg{z-index:0;width:1920px;height:1080px}
+.blob{position:absolute;border-radius:50%;filter:blur(60px)}
+#cam{z-index:1;width:1920px;height:1080px;transform-origin:960px 540px}
+.m{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .04em .12em;margin:0 -.04em -.12em}
+.m>span{display:inline-block;will-change:transform}
+#head{z-index:5;width:1920px;top:380px;text-align:center;font-family:Mont;font-weight:800;font-size:124px;line-height:1.05;letter-spacing:-.02em}
+#head .l2{color:var(--green)}
+.chip{position:absolute;z-index:4;left:0;top:0;display:flex;align-items:center;gap:12px;padding:10px 20px 10px 10px;background:#fff;border-radius:16px;
+  box-shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.08);font-weight:600;font-size:23px;white-space:nowrap}
+.ico{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:#fff;font:700 18px UI,Inter}
+#lines{z-index:3;width:1920px;height:1080px}
+#card{z-index:10;overflow:hidden;background:var(--card);box-shadow:0 2px 4px rgba(15,23,42,.05),0 24px 60px rgba(15,23,42,.10)}
+.page{position:absolute;left:0;top:0;opacity:0}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;font-weight:600;font-size:18px}
+.lbl{font-size:17px;font-weight:600;color:#94a3b8;letter-spacing:.01em}
+.field{border:2px solid #bfd9cf;border-radius:14px;padding:16px 20px;font-size:28px;font-weight:500;background:#f8fafb}
+.tog{width:64px;height:36px;border-radius:99px;background:var(--green);position:relative}
+.tog i{position:absolute;top:4px;left:32px;width:28px;height:28px;border-radius:50%;background:#fff}
+.ch{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-weight:600;font-size:20px;border:2px solid #d5dde5;color:#475569;background:#fff}
+.ch.on{background:var(--green);border-color:var(--green);color:#fff}
+.btn{position:absolute;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:14px;background:var(--green);color:#fff;font:700 22px Mont}
+.bar{height:10px;border-radius:5px;background:#e8edf2}
+.ex{position:absolute;padding:5px 12px;border:1.5px dashed #b6c2cf;border-radius:8px;color:#7b8794;font:600 15px UI,Inter;letter-spacing:.02em}
+#left{z-index:8}
+#stepper{position:absolute;left:150px;top:372px;height:52px;padding:0 6px;display:flex;align-items:center;gap:4px;background:#fff;border-radius:99px;
+  box-shadow:0 1px 2px rgba(15,23,42,.06),0 8px 22px rgba(15,23,42,.07)}
+#stepper .st{position:relative;z-index:2;padding:0 16px;font-weight:600;font-size:19px;color:#64748b;line-height:40px;white-space:nowrap}
+#stepper .st b{font-weight:600;opacity:.6;margin-right:6px}
+#spill{position:absolute;z-index:1;top:6px;height:40px;border-radius:99px;background:var(--ink)}
+.verb{position:absolute;left:146px;top:462px;font:800 124px/1.05 Mont;letter-spacing:-.025em;white-space:nowrap}
+.verb .dot{color:var(--green)}
+.sub{position:absolute;left:152px;top:618px;font-weight:500;font-size:34px;color:var(--slate);white-space:nowrap}
+.mini{position:absolute;width:300px;height:230px;border-radius:20px;background:var(--card);overflow:hidden;
+  box-shadow:0 2px 4px rgba(15,23,42,.05),0 16px 40px rgba(15,23,42,.09)}
+.mh{display:flex;align-items:center;gap:9px;padding:14px 14px 10px;font-weight:600;font-size:16px}
+.mh .ico{width:26px;height:26px;border-radius:7px;font-size:13px}
+.live{margin-left:auto;padding:3px 10px;border-radius:99px;background:#dcf3e7;color:var(--green);font-weight:700;font-size:13px}
+.mt{padding:8px 14px;font:700 15px/1.25 Mont}
+.cof{display:block;margin:0 14px;border-radius:12px}
+#cursor{z-index:30;width:40px;height:40px}
+#ripple{z-index:29;width:60px;height:60px;border-radius:50%;border:3px solid var(--green)}
+#logo{z-index:20;left:520px;top:300px;width:880px;height:300px}
+#logo img{position:absolute;left:0;top:0;width:880px;height:300px}
+#tag{z-index:20;width:1920px;top:650px;text-align:center;font:700 46px Mont;letter-spacing:-.01em}
+#url{z-index:20;width:1920px;top:730px;text-align:center;font-weight:500;font-size:27px;color:var(--slate)}
+#swoosh{z-index:2}
+#hud{position:fixed;left:8px;bottom:8px;color:#9aa;font:12px monospace;z-index:99}
+</style></head>
+<body>
+<div id="stage">
+  <div id="bg" class="abs">
+    <div class="blob" id="b1" style="width:900px;height:900px;background:#d4e5f3"></div>
+    <div class="blob" id="b2" style="width:800px;height:800px;background:#e2f1e6"></div>
+  </div>
+  <svg id="swoosh" class="abs" width="1920" height="1080" viewBox="0 0 1920 1080">
+    <path d="M1920 760 C1720 900 1450 1010 1120 1080 L1920 1080Z" fill="#9cc3ea" opacity=".55"/>
+    <path d="M1920 860 C1760 960 1560 1040 1340 1080 L1920 1080Z" fill="#1a4aa8" opacity=".9"/>
+  </svg>
+  <div id="cam" class="abs">
+    <svg id="lines" class="abs" width="1920" height="1080"></svg>
+    <div id="chips"></div>
+    <div id="head" class="abs">
+      <div><span class="m"><span>One</span></span> <span class="m"><span>campaign.</span></span></div>
+      <div class="l2"><span class="m"><span>Nine</span></span> <span class="m"><span>tools.</span></span></div>
+    </div>
+
+    <div id="left" class="abs">
+      <div id="stepper"><div id="spill"></div>
+        <div class="st"><b>01</b>Create</div><div class="st"><b>02</b>Control</div><div class="st"><b>03</b>Publish</div><div class="st"><b>04</b>Measure</div>
+      </div>
+      <div class="verb" id="v0"><span class="m"><span>Create<span class="dot">.</span></span></span></div>
+      <div class="verb" id="v1"><span class="m"><span>Control<span class="dot">.</span></span></span></div>
+      <div class="verb" id="v2"><span class="m"><span>Publish<span class="dot">.</span></span></span></div>
+      <div class="verb" id="v3"><span class="m"><span>Measure<span class="dot">.</span></span></span></div>
+      <div class="sub" id="s0"><span class="m"><span>Brief in. On-brand draft out.</span></span></div>
+      <div class="sub" id="s1"><span class="m"><span>Quality and SEO, checked.</span></span></div>
+      <div class="sub" id="s2"><span class="m"><span>One click. Every channel.</span></span></div>
+      <div class="sub" id="s3"><span class="m"><span>See what works, everywhere.</span></span></div>
+    </div>
+
+    <div id="grid"></div>
+    <div id="card" class="abs">
+      <!-- 01 brief -->
+      <div class="page" id="pBrief" style="width:820px;height:440px">
+        <div style="position:absolute;left:36px;top:30px;display:flex;gap:10px">
+          <span class="pill" style="background:#e3f3ec;color:var(--green)">+ New content</span>
+          <span class="pill" style="background:#f1f5f9;color:#475569"><i style="width:10px;height:10px;border-radius:3px;background:#8a5a3c;display:inline-block"></i>Saigon Roast · F&amp;B</span>
+        </div>
+        <span class="pill" style="position:absolute;right:36px;top:30px;border:2px solid var(--line);color:#64748b">Draft</span>
+        <div class="lbl" style="position:absolute;left:36px;top:100px">Brief</div>
+        <div class="field" style="position:absolute;left:36px;top:128px;width:704px;height:36px"><span id="typed"></span><span id="caret" style="display:inline-block;width:2px;height:30px;background:var(--ink);vertical-align:-4px;margin-left:2px"></span></div>
+        <div style="position:absolute;left:36px;top:218px;display:flex;align-items:center;gap:16px;font-size:20px">
+          <div class="tog"><i></i></div><b style="font-weight:600">Brand voice</b><span style="color:#64748b">· Saigon Roast: warm, expert, no jargon</span></div>
+        <div class="lbl" style="position:absolute;left:36px;top:284px">Channels</div>
+        <div id="chans" style="position:absolute;left:36px;top:314px;display:flex;gap:10px">
+          <span class="ch">Website</span><span class="ch">Facebook</span><span class="ch">LinkedIn</span><span class="ch">Instagram</span></div>
+        <div class="btn" id="gen" style="right:36px;top:366px;width:260px;height:52px"><span id="genlbl">+ Generate with AI</span></div>
+      </div>
+      <!-- 02 draft -->
+      <div class="page" id="pDraft" style="width:820px;height:560px">
+        <div style="position:absolute;left:40px;top:32px;display:flex;gap:10px">
+          <span class="pill" style="background:#f1f5f9;color:#475569">Draft v1</span>
+          <span class="pill" style="background:#e3f3ec;color:var(--green)">✓ Saigon Roast voice</span></div>
+        <div id="dTitle" style="position:absolute;left:40px;top:96px;width:740px;font:800 38px/1.18 Mont;letter-spacing:-.01em"></div>
+        <div id="dPara" style="position:absolute;left:40px;top:196px;width:720px;font-size:21px;line-height:1.45;color:#64748b"></div>
+        <div id="dList" style="position:absolute;left:40px;top:280px;width:740px;font-weight:600;font-size:21px">
+          <div class="li" style="height:44px">1. Pick a medium roast<div class="bar" style="width:520px;margin-top:8px"></div></div>
+          <div class="li" style="height:44px">2. Grind coarse, like sea salt<div class="bar" style="width:440px;margin-top:8px"></div></div>
+          <div class="li" style="height:44px">3. Steep 12 to 18 hours, then strain<div class="bar" style="width:480px;margin-top:8px"></div></div>
+        </div>
+        <div class="lbl" style="position:absolute;left:40px;top:442px">Channel versions</div>
+        <div id="dVer" style="position:absolute;left:40px;top:472px;display:flex;gap:12px">
+          <span class="pill" style="border:2px solid var(--line);background:#fff;color:var(--ink)"><span class="ico" style="width:22px;height:22px;border-radius:6px;font-size:12px;background:#1877f2">f</span>Facebook <span style="color:var(--green)">· Ready</span></span>
+          <span class="pill" style="border:2px solid var(--line);background:#fff;color:var(--ink)"><span class="ico" style="width:22px;height:22px;border-radius:6px;font-size:12px;background:#0a66c2">in</span>LinkedIn <span style="color:var(--green)">· Ready</span></span>
+          <span class="pill" style="border:2px solid var(--line);background:#fff;color:var(--ink)"><span class="ico" style="width:22px;height:22px;border-radius:6px;font-size:12px;background:#e1306c">ig</span>Instagram <span style="color:var(--green)">· Ready</span></span>
+        </div>
+      </div>
+      <!-- 03 QC + approve -->
+      <div class="page" id="pQC" style="width:820px;height:560px">
+        <svg style="position:absolute;left:40px;top:40px" width="300" height="300" viewBox="0 0 300 300">
+          <circle cx="150" cy="150" r="124" fill="none" stroke="#e8eef3" stroke-width="22"/>
+          <circle id="qcArc" cx="150" cy="150" r="124" fill="none" stroke="#107658" stroke-width="22" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="779.1" stroke-dashoffset="779.1"/>
+        </svg>
+        <div style="position:absolute;left:40px;top:128px;width:300px;text-align:center">
+          <div class="lbl" style="font-size:16px">QC score</div>
+          <div id="qcNum" style="font:800 74px/1.05 Mont;letter-spacing:-.02em">0.0</div>
+          <div style="color:#94a3b8;font-size:16px">out of 100</div></div>
+        <div id="passed" class="pill" style="position:absolute;left:104px;top:356px;background:var(--green);color:#fff">✓ Passed QC</div>
+        <div style="position:absolute;left:400px;top:52px">
+          <div style="font:700 21px Mont;margin-bottom:14px">Quality &amp; SEO checklist</div>
+          <div id="qcList"></div></div>
+        <div style="position:absolute;left:40px;right:40px;top:440px;height:2px;background:#eef2f6"></div>
+        <div style="position:absolute;left:40px;top:470px;display:flex;align-items:center;gap:14px;font-size:21px">
+          <span class="ico" style="width:44px;height:44px;border-radius:50%;background:#2589d1;font-size:19px">L</span>
+          <b style="font-weight:600">Linh Tran</b><span style="color:#64748b">· Approver · reviewing v3</span></div>
+        <div class="btn" id="appr" style="right:40px;top:466px;width:180px;height:52px"><span id="apprlbl">Approve</span></div>
+        <div class="ex" style="right:40px;top:398px">Example data</div>
+      </div>
+      <!-- 04 post preview -->
+      <div class="page" id="pPost" style="width:620px;height:500px">
+        <div style="position:absolute;left:30px;top:26px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:21px">
+          <span class="ico" style="background:#1a4aa8">W</span>Your website<span style="color:#94a3b8;font-weight:500;font-size:18px">saigonroast.vn</span></div>
+        <svg class="cof" id="cofBig" style="position:absolute;left:16px;top:82px;margin:0" width="588" height="250" viewBox="0 0 300 128"></svg>
+        <div style="position:absolute;left:30px;top:350px;font:700 25px Mont">Cold brew at home: a beginner's guide</div>
+        <div class="btn" id="pub" style="left:150px;top:410px;width:320px;height:60px;font-size:24px;border-radius:99px"><span id="publbl">Publish now →</span></div>
+      </div>
+      <!-- 04b mini (slot 0) -->
+      <div class="page" id="pMini" style="width:300px;height:230px"></div>
+      <!-- 05 performance -->
+      <div class="page" id="pPerf" style="width:860px;height:560px">
+        <div style="position:absolute;left:40px;top:32px;font:800 30px Mont">Performance</div>
+        <div style="position:absolute;left:40px;top:74px;color:#94a3b8;font-size:17px">Last 30 days · all channels</div>
+        <div class="ex" style="right:40px;top:38px">Example data</div>
+        <div id="tiles" style="position:absolute;left:40px;top:116px;display:flex;gap:14px"></div>
+        <div style="position:absolute;left:40px;top:250px;width:780px;height:270px;border:2px solid #eef2f6;border-radius:16px">
+          <div style="position:absolute;left:22px;top:16px;font:700 18px Mont">Created vs. published</div>
+          <div style="position:absolute;right:22px;top:18px;display:flex;gap:16px;font-size:15px;color:#64748b">
+            <span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#1a4aa8;margin-right:6px"></i>Created</span>
+            <span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#107658;margin-right:6px"></i>Published</span></div>
+          <svg id="chart" style="position:absolute;left:0;top:50px" width="780" height="210" viewBox="0 0 780 210"></svg>
+        </div>
+      </div>
+    </div>
+    <svg id="cursor" class="abs" viewBox="0 0 40 40"><path d="M6 3 L6 31 L13 24.5 L18 35.5 L23 33.3 L18.2 22.6 L27.5 22.3 Z" fill="#0b0b0c" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>
+    <div id="ripple" class="abs"></div>
+  </div>
+  <div id="logo" class="abs"><img id="ring" src="assets/ring.png"><img id="word" src="assets/word.png"></div>
+  <div id="tag" class="abs"><span class="m"><span>Turn AI into your</span></span> <span class="m"><span>marketing operations system.</span></span></div>
+  <div id="url" class="abs"><span class="m"><span>aipower.vn &nbsp;·&nbsp; contact@aipower.vn</span></span></div>
+</div>
+<div id="hud"></div>
+<script>
+// ---------- math ----------
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, p) => a + (b - a) * p;
+const seg = (t, a, b) => (t <= a ? 0 : t >= b ? 1 : (t - a) / (b - a));
+const io = p => (p <= 0 ? 0 : p >= 1 ? 1 : p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+const out = p => (p <= 0 ? 0 : p >= 1 ? 1 : 1 - Math.pow(1 - p, 3));
+const o5 = p => (p <= 0 ? 0 : p >= 1 ? 1 : 1 - Math.pow(1 - p, 5));
+const inn = p => (p <= 0 ? 0 : p >= 1 ? 1 : p * p * p);
+// closed-form damped spring step response (0 before tau=0)
+function step(tau, f = 2.2, z = .8) {
+  if (tau <= 0) return 0;
+  const w = 2 * Math.PI * f, wd = w * Math.sqrt(1 - z * z);
+  return 1 - Math.exp(-z * w * tau) * (Math.cos(wd * tau) + (z * w / wd) * Math.sin(wd * tau));
+}
+// value with several targets: sum of one spring per change. keys: [[t, v, f?, z?], ...]
+function spr(t, v0, keys) {
+  let v = v0, prev = v0;
+  for (const k of keys) { v += (k[1] - prev) * step(t - k[0], k[2] || 2.2, k[3] || .8); prev = k[1]; }
+  return v;
+}
+// mulberry32 (deterministic)
+function rng(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const $ = id => document.getElementById(id);
+const T = 15;
+
+// ---------- build ----------
+const CHIPS = [
+  ['Docs', 'D', '#4285f4', -700, -300], ['ChatGPT', 'G', '#10a37f', -250, -330], ['Sheets', 'S', '#0f9d58', 290, -352],
+  ['WordPress', 'W', '#21759b', 690, -235], ['Facebook', 'f', '#1877f2', -790, 20], ['LinkedIn', 'in', '#0a66c2', 720, 80],
+  ['Instagram', 'ig', '#e1306c', -600, 300], ['Email', '@', '#64748b', -60, 345], ['Excel', 'X', '#217346', 480, 320]];
+const chipEls = CHIPS.map(c => {
+  const d = document.createElement('div'); d.className = 'chip';
+  d.innerHTML = `<span class="ico" style="background:${c[2]}">${c[1]}</span>${c[0]}`; $('chips').appendChild(d); return d;
+});
+const PAIRS = [[0, 1], [1, 2], [2, 3], [0, 4], [4, 6], [6, 7], [7, 8], [8, 5], [5, 3], [1, 7], [2, 8], [0, 7], [4, 1]];
+const lineEls = PAIRS.map(() => {
+  const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l.setAttribute('stroke', '#94a3b8'); l.setAttribute('stroke-width', '2'); l.setAttribute('stroke-dasharray', '3 7');
+  $('lines').appendChild(l); return l;
+});
+
+// coffee illustration (shared by the post card and the 6 channel cards)
+const COF = `<rect width="300" height="128" rx="10" fill="#f3e6d4"/><circle cx="214" cy="60" r="40" fill="#efcfae"/>
+<rect x="0" y="98" width="300" height="30" fill="#e7d3b8"/>
+<path d="M118 34 L162 34 L156 112 L124 112 Z" fill="#fff" opacity=".55"/><path d="M121 52 L159 52 L155 110 L125 110 Z" fill="#4a2a17"/>
+<path d="M121 52 L159 52 L158 62 L122 62 Z" fill="#7a4a2a"/><rect x="146" y="16" width="5" height="44" rx="2" fill="#2e7d5b" transform="rotate(12 148 38)"/>`;
+$('cofBig').innerHTML = COF;
+
+const CH = [['Website', 'W', '#1a4aa8'], ['WordPress', 'W', '#21759b'], ['Facebook', 'f', '#1877f2'], ['LinkedIn', 'in', '#0a66c2'], ['Instagram', 'ig', '#e1306c'], ['X', 'X', '#0b0b0c']];
+const miniHTML = c => `<div class="mh"><span class="ico" style="background:${c[2]}">${c[1]}</span>${c[0]}<span class="live">● Live</span></div>
+<svg class="cof" width="272" height="116" viewBox="0 0 300 128">${COF}</svg><div class="mt">Cold brew at home: a beginner's guide</div>`;
+$('pMini').innerHTML = miniHTML(CH[0]);
+const miniEls = CH.slice(1).map(c => { const d = document.createElement('div'); d.className = 'mini abs'; d.innerHTML = miniHTML(c); $('grid').appendChild(d); return d; });
+const liveEls = [$('pMini').querySelector('.live'), ...miniEls.map(m => m.querySelector('.live'))];
+
+const CHECKS = ['Spelling &amp; grammar', 'Heading structure', 'Title &amp; meta description', 'Target keywords', 'Image alt text', 'Internal links'];
+$('qcList').innerHTML = CHECKS.map(c => `<div class="qi" style="display:flex;align-items:center;gap:14px;height:52px;font-size:21px;font-weight:500">
+<svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="13" fill="none" stroke="#cbd5e1" stroke-width="2.5"/><circle class="qf" cx="15" cy="15" r="14" fill="#107658"/>
+<path class="qk" d="M9 15.5 L13.3 19.6 L21.5 10.8" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="20" stroke-dashoffset="20"/></svg>${c}</div>`).join('');
+const qiEls = [...document.querySelectorAll('.qi')];
+
+const TILES = [['Views', 24, 'K', '+36%'], ['Likes', 1.2, 'K', '+48%'], ['Comments', 2, 'K', '+12%'], ['Shares', 4, 'K', '+9%']];
+$('tiles').innerHTML = TILES.map(x => `<div class="tile" style="width:184px;height:112px;border:2px solid #eef2f6;border-radius:16px;position:relative">
+<div style="position:absolute;left:18px;top:14px;color:#64748b;font-size:16px;font-weight:600">${x[0]}</div>
+<div class="tn" style="position:absolute;left:18px;top:44px;font:800 40px Mont;letter-spacing:-.02em">0</div>
+<div style="position:absolute;right:16px;top:58px;color:var(--green);font-weight:700;font-size:15px;background:#e3f3ec;padding:3px 8px;border-radius:99px">${x[3]}</div></div>`).join('');
+const tileEls = [...document.querySelectorAll('.tile')];
+
+// chart: two smooth series (illustrative, deterministic)
+(function () {
+  const W = 780, H = 210, n = 13, r = rng(7);
+  const a = [], b = [];
+  for (let i = 0; i < n; i++) { a.push(.45 + .22 * Math.sin(i * .9 + .6) + .06 * r()); b.push(.38 + .25 * Math.sin(i * .8 - .2) + .12 * i / n + .05 * r()); }
+  b[9] = .92;
+  const pts = s => s.map((v, i) => [30 + i * (W - 60) / (n - 1), H - 20 - v * (H - 50)]);
+  const path = p => p.reduce((d, q, i) => { if (!i) return `M${q[0]} ${q[1]}`; const o = p[i - 1], mx = (o[0] + q[0]) / 2; return d + ` C${mx} ${o[1]} ${mx} ${q[1]} ${q[0]} ${q[1]}`; }, '');
+  const pa = pts(a), pb = pts(b);
+  window.PEAK = pb[9];
+  $('chart').innerHTML = `<defs><linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#107658" stop-opacity=".22"/><stop offset="1" stop-color="#107658" stop-opacity="0"/></linearGradient>
+<clipPath id="cc"><rect id="ccr" x="0" y="0" width="0" height="210"/></clipPath></defs>
+<g clip-path="url(#cc)"><path d="${path(pb)} L${pb[n - 1][0]} ${H} L30 ${H} Z" fill="url(#gf)"/>
+<path d="${path(pa)}" fill="none" stroke="#1a4aa8" stroke-width="3.5" opacity=".75"/>
+<path d="${path(pb)}" fill="none" stroke="#107658" stroke-width="4"/></g>
+<g id="peak" opacity="0"><line x1="${pb[9][0]}" y1="20" x2="${pb[9][0]}" y2="${H}" stroke="#94a3b8" stroke-dasharray="3 5"/>
+<circle cx="${pb[9][0]}" cy="${pb[9][1]}" r="8" fill="#fff" stroke="#107658" stroke-width="4"/>
+<g transform="translate(${pb[9][0] - 190} ${pb[9][1] - 64})"><rect width="176" height="48" rx="10" fill="#08173d"/>
+<text x="14" y="20" fill="#fff" font-family="Montserrat,Mont" font-weight="700" font-size="14">Cold brew at home</text>
+<text x="14" y="38" fill="#a8b3c7" font-family="Inter" font-size="12">8.4K views · 4 channels</text></g></g>`;
+})();
+
+const TYPED = "Cold brew at home: a beginner's guide";
+const TITLE = 'Cold Brew at Home: The Complete Beginner’s Guide';
+const PARA = 'Smooth, low-acid and easy to make. Here’s how to brew café-quality cold brew in your own kitchen.';
+
+// ---------- timeline constants ----------
+const CX = 1250, CY = 540;                         // card centre (camera space)
+const SLOT = i => [CX + ((i % 3) - 1) * 324, CY + (i < 3 ? -127 : 127)];
+const RING_C = [520 + 148, 300 + 152];             // ring centre (stage space)
+const RING_A0 = 115;                               // ring sweep starts at the lower-right end (deg, clockwise from top)
+const RING_R = 120;
+const DOT_END = [RING_C[0] + RING_R * Math.sin(RING_A0 * Math.PI / 180), RING_C[1] - RING_R * Math.cos(RING_A0 * Math.PI / 180)];
+const SEC = [2.45, 5.0, 7.5, 10.0];                // Create / Control / Publish / Measure
+const END = 11.95;
+
+// camera: one slow monotonic push + drift (stage space), zoom in log space
+function cam(t) {
+  const z = Math.exp(lerp(0, Math.log(1.045), io(seg(t, 0, 12.2))));
+  return { z, x: lerp(0, -18, io(seg(t, 0, 12.2))), y: 0 };
+}
+
+// card geometry: springs on every key (dot -> brief -> draft -> post -> slot 0 -> perf -> dot -> ring)
+function cardGeom(t) {
+  const s0 = SLOT(0);
+  const x = spr(t, 960, [[2.0, CX, 2.0, .86], [8.1, s0[0], 2.2, .84], [10.22, CX, 2.0, .86]]);
+  const y = spr(t, 540, [[8.1, s0[1], 2.2, .84], [10.22, CY, 2.0, .86]]);
+  const w = spr(t, 30, [[2.3, 820, 1.9, .78], [3.75, 820], [7.5, 620, 2.2, .82], [8.1, 300, 2.2, .84], [10.22, 860, 1.9, .8], [END, 30, 2.6, .9]]);
+  const h = spr(t, 30, [[2.3, 440, 1.9, .78], [3.75, 560, 2.0, .8], [7.5, 500, 2.2, .82], [8.1, 230, 2.2, .84], [10.22, 560, 1.9, .8], [END, 30, 2.6, .9]]);
+  const r = lerp(15, 28, clamp(Math.min(w, h) / 60 - .5));
+  return { x, y, w: Math.max(0, w), h: Math.max(0, h), r };
+}
+
+// masked word rise: p 0 -> hidden below, 1 -> in place, -> 2 gone above
+function riseWords(root, tIn, tOut, stag = .055, dur = .5, durOut = .3) {
+  const ws = root.querySelectorAll('.m>span');
+  ws.forEach((w, i) => {
+    const pin = o5(seg(window._t, tIn + i * stag, tIn + i * stag + dur));
+    const pout = tOut == null ? 0 : inn(seg(window._t, tOut + i * stag * .6, tOut + i * stag * .6 + durOut));
+    const y = (1 - pin) * 108 - pout * 108;
+    const rot = (1 - pin) * 4;
+    w.style.transform = `translateY(${y}%) rotate(${rot}deg)`;
+  });
+}
+const show = (el, o) => { el.style.opacity = o; el.style.visibility = o <= 0.001 ? 'hidden' : 'inherit'; };
+const xf = (el, s) => { el.style.transform = s; };
+
+// ---------- seek ----------
+window.seek = async function (t) {
+  window._t = t;
+  const S = $('stage');
+  // background blobs drift (never frozen)
+  xf($('b1'), `translate(${1180 + 60 * Math.sin(t * .35)}px, ${-380 + 40 * Math.cos(t * .3)}px)`);
+  xf($('b2'), `translate(${-260 + 50 * Math.cos(t * .28)}px, ${520 + 40 * Math.sin(t * .33)}px)`);
+  const c = cam(t);
+  xf($('cam'), `translate(${c.x}px, ${c.y}px) scale(${c.z})`);
+
+  // ---- hook ----
+  riseWords($('head'), .12, 1.5, .09, .55, .3);
+  const h2 = $('head').querySelectorAll('.l2 .m>span');
+  h2.forEach((w, i) => { // second line enters later
+    const pin = o5(seg(t, .72 + i * .09, 1.27 + i * .09)), pout = inn(seg(t, 1.56 + i * .05, 1.86 + i * .05));
+    w.style.transform = `translateY(${(1 - pin) * 108 - pout * 108}%) rotate(${(1 - pin) * 4}deg)`;
+  });
+  show($('head'), t < 2.0 ? 1 : 0);
+  CHIPS.forEach((ch, i) => {
+    const el = chipEls[i], t0 = .3 + i * .085;
+    const pop = step(t - t0, 2.6, .74);
+    const fx = 8 * Math.sin(t * 1.1 + i * 1.7), fy = 6 * Math.cos(t * .9 + i * 2.3);
+    const pc = inn(seg(t, 1.55 + (8 - i) * .018, 2.0 + (8 - i) * .018 - .1));       // pulled into the centre, accelerating
+    const x = 960 + (ch[3] + fx) * (1 - pc), y = 540 + (ch[4] + fy) * (1 - pc);
+    const sc = (.6 + .4 * pop) * (1 - .85 * pc);
+    show(el, t < t0 ? 0 : clamp(seg(t, t0, t0 + .12)) * (1 - clamp((pc - .6) / .35)));
+    xf(el, `translate(${x}px, ${y}px) translate(-50%,-50%) scale(${sc})`);
+  });
+  PAIRS.forEach(([a, b], i) => {
+    const l = lineEls[i], A = CHIPS[a], B = CHIPS[b];
+    const pc = inn(seg(t, 1.5, 1.95));
+    const g = out(seg(t, .55 + i * .05, 1.15 + i * .05));
+    const ax = 960 + A[3] * (1 - pc), ay = 540 + A[4] * (1 - pc), bx = 960 + B[3] * (1 - pc), by = 540 + B[4] * (1 - pc);
+    l.setAttribute('x1', ax); l.setAttribute('y1', ay);
+    l.setAttribute('x2', lerp(ax, bx, g)); l.setAttribute('y2', lerp(ay, by, g));
+    l.setAttribute('opacity', .7 * g * (1 - pc));
+  });
+
+  // ---- card (the one shape) ----
+  const g = cardGeom(t), card = $('card');
+  const dotPop = step(t - 1.82, 2.8, .72);
+  const bgMix = clamp(seg(t, 2.3, 2.5)) * (1 - clamp(seg(t, END + .05, END + .25)));
+  const vis = t >= 1.8 && t < 12.62;
+  show(card, vis ? (t > 12.4 ? 1 - seg(t, 12.4, 12.62) : 1) : 0);
+  let gx = g.x, gy = g.y, gs = t < 2.0 ? dotPop : 1;
+  if (t > END + .2) { // dot travels to the start of the ring (stage space -> camera space)
+    const p = io(seg(t, END + .22, 12.5));
+    const cc = cam(t), tx = (DOT_END[0] - 960 - cc.x) / cc.z + 960, ty = (DOT_END[1] - 540 - cc.y) / cc.z + 540;
+    gx = lerp(CX, tx, p); gy = lerp(CY, ty, p); gs = lerp(1, 34 / 30 / cc.z, p);
+  }
+  Object.assign(card.style, { width: g.w + 'px', height: g.h + 'px', borderRadius: g.r + 'px',
+    transform: `translate(${gx - g.w / 2}px, ${gy - g.h / 2}px) scale(${gs})`,
+    background: `color-mix(in srgb, #fbfdfa ${bgMix * 100}%, #20af48)` });
+  card.style.boxShadow = bgMix > .5 ? '' : 'none';
+
+  // pages: fade + small rise
+  const page = (id, a, b, c2, d) => {
+    const p = clamp(seg(t, a, b)) * (1 - clamp(seg(t, c2, d)));
+    show($(id), p); $(id).style.transform = `translateY(${(1 - out(seg(t, a, b + .15))) * 14}px)`;
+  };
+  // pages are laid out at their final size and centred in the card
+  const centre = (id, pw, ph) => { $(id).style.left = (g.w - pw) / 2 + 'px'; $(id).style.top = (g.h - ph) / 2 + 'px'; };
+  centre('pBrief', 820, 440); centre('pDraft', 820, 560); centre('pQC', 820, 560); centre('pPost', 620, 500); centre('pMini', 300, 230); centre('pPerf', 860, 560);
+  page('pBrief', 2.45, 2.62, 3.72, 3.84);
+  page('pDraft', 3.78, 3.9, 4.98, 5.1);
+  page('pQC', 5.1, 5.24, 7.44, 7.54);
+  page('pPost', 7.52, 7.66, 8.06, 8.16);
+  page('pMini', 8.12, 8.24, 10.18, 10.26);
+  page('pPerf', 10.36, 10.5, END - .08, END + .02);
+
+  // brief: typing + caret + channels + generate
+  const nType = Math.floor(clamp(seg(t, 2.62, 3.2)) * TYPED.length);
+  $('typed').textContent = TYPED.slice(0, nType);
+  $('caret').style.opacity = (t < 3.2 || Math.floor((t - 3.2) * 2.6) % 2 === 0) ? 1 : 0;
+  [...$('chans').children].forEach((el, i) => {
+    const on = t >= 3.22 + i * .07; el.classList.toggle('on', on);
+    el.textContent = (on ? '✓ ' : '') + ['Website', 'Facebook', 'LinkedIn', 'Instagram'][i];
+    xf(el, `scale(${1 + .06 * Math.sin(Math.PI * clamp(seg(t, 3.22 + i * .07, 3.36 + i * .07)))})`);
+  });
+  const genP = t >= 3.5;
+  $('genlbl').textContent = genP ? 'Drafting with AI…' : '+ Generate with AI';
+  xf($('gen'), `scale(${1 - .05 * Math.sin(Math.PI * clamp(seg(t, 3.46, 3.62)))})`);
+
+  // draft writes itself
+  $('dTitle').textContent = TITLE.slice(0, Math.floor(clamp(seg(t, 3.84, 4.16)) * TITLE.length));
+  $('dPara').textContent = PARA.slice(0, Math.floor(clamp(seg(t, 4.1, 4.4)) * PARA.length));
+  [...$('dList').children].forEach((el, i) => { const p = o5(seg(t, 4.22 + i * .07, 4.6 + i * .07)); show(el, p); xf(el, `translateY(${(1 - p) * 16}px)`); });
+  [...$('dVer').children].forEach((el, i) => { const p = step(t - (4.42 + i * .07), 2.8, .75); show(el, clamp(p * 1.5)); xf(el, `scale(${.7 + .3 * p})`); });
+
+  // QC ring + checklist + passed + approve
+  const q = o5(seg(t, 5.15, 6.25)) * .924;
+  $('qcArc').setAttribute('stroke-dashoffset', 779.1 * (1 - q));
+  $('qcNum').textContent = (q * 100).toFixed(1);
+  qiEls.forEach((el, i) => {
+    const p = clamp(seg(t, 5.3 + i * .14, 5.44 + i * .14));
+    show(el.querySelector('.qf'), p); xf(el.querySelector('.qf'), `scale(${.6 + .4 * out(p)})`); el.querySelector('.qf').style.transformOrigin = '15px 15px';
+    el.querySelector('.qk').setAttribute('stroke-dashoffset', 20 * (1 - out(seg(t, 5.36 + i * .14, 5.52 + i * .14))));
+  });
+  const pp = step(t - 6.5, 3.0, .72);
+  show($('passed'), clamp(pp * 2)); xf($('passed'), `scale(${.6 + .4 * pp})`);
+  const ap = t >= 7.0;
+  $('apprlbl').textContent = ap ? '✓ Approved' : 'Approve';
+  $('appr').style.background = ap ? '#08173d' : '';
+  xf($('appr'), `scale(${1 - .05 * Math.sin(Math.PI * clamp(seg(t, 6.96, 7.12)))})`);
+
+  // publish
+  $('publbl').textContent = t >= 8.0 ? '✓ Published' : 'Publish now →';
+  xf($('pub'), `scale(${1 - .05 * Math.sin(Math.PI * clamp(seg(t, 7.96, 8.12)))})`);
+  miniEls.forEach((el, k) => {
+    const i = k + 1, s0 = SLOT(0), s = SLOT(i), t0 = 8.2 + k * .075;
+    const p = step(t - t0, 2.3, .8), back = inn(seg(t, 9.98 + (4 - k) * .025, 10.2 + (4 - k) * .025));
+    const x = lerp(lerp(s0[0], s[0], p), s0[0], back), y = lerp(lerp(s0[1], s[1], p), s0[1], back);
+    show(el, t < t0 ? 0 : clamp(seg(t, t0, t0 + .06)) * (1 - clamp((back - .7) / .3)));
+    xf(el, `translate(${x - 150}px, ${y - 115}px) scale(${1 - .08 * back})`);
+  });
+  liveEls.forEach((el, i) => { const p = step(t - (8.62 + i * .07), 3.0, .72); el.style.opacity = clamp(p * 1.6); el.style.transform = `scale(${.5 + .5 * p})`; el.style.display = 'inline-block'; });
+
+  // performance
+  tileEls.forEach((el, i) => {
+    const p = o5(seg(t, 10.46 + i * .07, 10.88 + i * .07)); show(el, p); xf(el, `translateY(${(1 - p) * 16}px)`);
+    const v = TILES[i][1] * o5(seg(t, 10.52 + i * .07, 11.3 + i * .07));
+    el.querySelector('.tn').textContent = (TILES[i][1] < 10 ? v.toFixed(1).replace(/\.0$/, '') : Math.round(v)) + TILES[i][2];
+  });
+  const ccr = document.getElementById('ccr'); if (ccr) ccr.setAttribute('width', 780 * io(seg(t, 10.65, 11.55)));
+  const pk = document.getElementById('peak'); if (pk) pk.setAttribute('opacity', o5(seg(t, 11.45, 11.65)));
+
+  // ---- left column (stepper + verbs + subs) ----
+  const L = $('left');
+  const lIn = o5(seg(t, 2.35, 2.75)), lOut = inn(seg(t, END - .1, END + .2));
+  show($('stepper'), lIn * (1 - lOut));
+  xf($('stepper'), `translateY(${(1 - lIn) * 20 - lOut * 20}px)`);
+  const sts = [...document.querySelectorAll('#stepper .st')];
+  const idx = SEC.filter(s => t >= s - .05).length - 1;
+  const offs = sts.map(s => [s.offsetLeft, s.offsetWidth]);
+  const pl = spr(t, offs[0][0], SEC.slice(1).map((s, i) => [s, offs[i + 1][0], 2.4, .82]));
+  const pw = spr(t, offs[0][1], SEC.slice(1).map((s, i) => [s, offs[i + 1][1], 2.4, .82]));
+  Object.assign($('spill').style, { left: pl + 'px', width: pw + 'px' });
+  sts.forEach((s, i) => { s.style.color = i === Math.max(0, idx) ? '#fff' : '#64748b'; });
+  for (let i = 0; i < 4; i++) {
+    const tin = SEC[i] + .08, tout = i < 3 ? SEC[i + 1] - .12 : END - .12;
+    riseWords($('v' + i), tin, tout, .05, .55, .26);
+    riseWords($('s' + i), tin + .14, tout + .02, .05, .5, .24);
+    const on = t > tin - .02 && t < tout + .45;
+    show($('v' + i), on ? 1 : 0); show($('s' + i), on ? 1 : 0);
+  }
+
+  // ---- cursor ----
+  const CK = [[2.95, 1730, 940], [3.42, 1522, 708], [3.62, 1522, 708], [3.95, 1610, 830],
+              [6.35, 1720, 960], [6.9, 1545, 768], [7.12, 1545, 768], [7.88, 1262, 738], [8.1, 1262, 738], [8.45, 1420, 900]];
+  const curAt = tt => { let x = CK[0][1], y = CK[0][2];
+    for (let i = 1; i < CK.length; i++) if (tt >= CK[i - 1][0]) { const p = io(seg(tt, CK[i - 1][0], CK[i][0])); x = lerp(CK[i - 1][1], CK[i][1], p); y = lerp(CK[i - 1][2], CK[i][2], p); }
+    return [x, y]; };
+  const [cx, cy] = curAt(t);
+  const cOp = clamp(seg(t, 2.95, 3.1)) * (1 - clamp(seg(t, 3.75, 3.95))) + clamp(seg(t, 6.35, 6.5)) * (1 - clamp(seg(t, 8.25, 8.45)));
+  const clicks = [3.5, 7.0, 8.0];
+  let press = 0, rip = null, rp = [0, 0];
+  for (const k of clicks) { press = Math.max(press, Math.sin(Math.PI * clamp(seg(t, k - .06, k + .1)))); if (t >= k && t < k + .4) { rip = seg(t, k, k + .4); rp = curAt(k); } }
+  show($('cursor'), cOp);
+  xf($('cursor'), `translate(${cx - 6}px, ${cy - 3}px) scale(${1 - .14 * press})`);
+  $('cursor').style.transformOrigin = '6px 3px';
+  show($('ripple'), rip == null ? 0 : (1 - rip) * .8 * cOp);
+  if (rip != null) xf($('ripple'), `translate(${rp[0] - 30}px, ${rp[1] - 30}px) scale(${.3 + 1.1 * out(rip)})`);
+
+  // ---- end card: ring draws from the dot, wordmark wipes, tagline ----
+  const ringP = o5(seg(t, 12.45, 13.2));
+  const deg = 360 * ringP;
+  const ring = $('ring');
+  ring.style.webkitMaskImage = ring.style.maskImage = `conic-gradient(from ${RING_A0}deg at 148px 152px, #000 0deg, #000 ${deg}deg, transparent ${deg + .6}deg)`;
+  show(ring, t >= 12.42 ? 1 : 0);
+  const wp = o5(seg(t, 12.85, 13.5));
+  const word = $('word');
+  word.style.clipPath = `inset(0 ${(1 - wp) * 100}% 0 ${Math.max(0, 0)}%)`;
+  xf(word, `translateX(${(1 - wp) * -36}px)`);
+  show(word, t >= 12.85 ? 1 : 0);
+  // final hold stays alive: slow push on the whole end card
+  const ez = 1 + .03 * io(seg(t, 12.4, 15));
+  xf($('logo'), `scale(${ez * (1 + .04 * (1 - out(seg(t, 12.42, 13.3))))})`); $('logo').style.transformOrigin = '440px 150px';
+  riseWords($('tag'), 13.35, null, .1, .6);
+  xf($('tag'), `scale(${ez})`); $('tag').style.transformOrigin = '960px -170px';
+  riseWords($('url'), 13.75, null, .05, .55);
+  xf($('url'), `scale(${ez})`); $('url').style.transformOrigin = '960px -250px';
+  show($('tag'), t > 13.3 ? 1 : 0); show($('url'), t > 13.7 ? 1 : 0);
+  const sw = o5(seg(t, 13.0, 14.0));
+  show($('swoosh'), sw); xf($('swoosh'), `translate(${(1 - sw) * 160}px, ${(1 - sw) * 90 - 6 * Math.sin(t * .8)}px)`);
+
+  $('hud').textContent = t.toFixed(3) + 's';
+};
+
+// ---------- ready + preview controls (Space play/pause, arrows frame, R replay) ----------
+Promise.all([document.fonts.load('800 100px Mont'), document.fonts.load('600 20px UI'), document.fonts.ready,
+  ...[...document.images].map(i => i.decode().catch(() => 0))]).then(() => { window.seek(0); window.ready = true; });
+let playing = false, t0 = 0, cur = 0;
+function loop(ts) { if (!playing) return; cur = (ts - t0) / 1000; if (cur >= T) { cur = T; playing = false; } window.seek(cur); requestAnimationFrame(loop); }
+addEventListener('keydown', e => {
+  if (e.code === 'Space') { playing = !playing; if (playing) { if (cur >= T) cur = 0; t0 = performance.now() - cur * 1000; requestAnimationFrame(loop); } }
+  if (e.code === 'ArrowRight') { playing = false; cur = Math.min(T, cur + 1 / 60); window.seek(cur); }
+  if (e.code === 'ArrowLeft') { playing = false; cur = Math.max(0, cur - 1 / 60); window.seek(cur); }
+  if (e.code === 'KeyR') { cur = 0; playing = true; t0 = performance.now(); requestAnimationFrame(loop); }
+});
+</script></body></html>
